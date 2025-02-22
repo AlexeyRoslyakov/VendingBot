@@ -138,6 +138,7 @@ async Task HandleCustomProblem(Message msg)
     LogCustomProblem(msg.Chat.Id, customProblem);
     await ShowDistrictKeyboard(msg.Chat.Id);
     userStates[msg.Chat.Id] = "waiting_for_district";
+    userChoices[msg.Chat.Id] = customProblem;
 }
 
 async Task ShowDistrictKeyboard(long chatId)
@@ -197,7 +198,10 @@ string GetUserChoice(long chatId)
 
 string GetCustomProblem(long chatId)
 {
-    // Временное решение, замените на работу с базой данных
+    if (userChoices.TryGetValue(chatId, out var problem))
+    {
+        return problem;
+    }
     return "default_custom_problem";
 }
 
