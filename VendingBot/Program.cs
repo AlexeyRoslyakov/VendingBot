@@ -13,17 +13,30 @@ var app = builder.Build();
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
 
-app.Run("http://*:80"); // Слушаем порт 80
 
 app.MapPost("/webhook", async context =>
 {
-    var update = await context.Request.ReadFromJsonAsync<Update>();
-    if (update?.Message != null)
+    Console.WriteLine("Получен запрос от Telegram");
+    try
     {
-        await OnMessage(update.Message); // Вызов логики бота
+        var update = await context.Request.ReadFromJsonAsync<Update>();
+        if (update?.Message != null)
+        {
+            Console.WriteLine($"Получено сообщение: {update.Message.Text} от {update.Message.Chat.Id}");
+            await OnMessage(update.Message); // Вызов логики бота
+        }
+        await context.Response.WriteAsync("OK");
     }
-    await context.Response.WriteAsync("OK");
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка при обработке запроса: {ex.Message}");
+        context.Response.StatusCode = 500;
+        await context.Response.WriteAsync("Internal Server Error");
+    }
 });
+
+app.Run("http://*:80"); // Слушаем порт 80
+
 
 async Task OnMessage(Message msg)
 {
