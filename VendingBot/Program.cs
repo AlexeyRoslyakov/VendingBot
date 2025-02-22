@@ -13,14 +13,17 @@ var app = builder.Build();
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
 
+app.Run("http://*:80"); // Слушаем порт 80
+
 app.MapPost("/webhook", async context =>
 {
     var update = await context.Request.ReadFromJsonAsync<Update>();
-    // Обработка обновления
+    if (update?.Message != null)
+    {
+        await OnMessage(update.Message); // Вызов логики бота
+    }
     await context.Response.WriteAsync("OK");
 });
-
-app.Run("http://*:80"); // Слушаем порт 80
 
 async Task OnMessage(Message msg)
 {
