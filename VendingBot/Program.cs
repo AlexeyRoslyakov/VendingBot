@@ -13,7 +13,6 @@ var app = builder.Build();
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
 
-
 app.MapPost("/webhook", async context =>
 {
     Console.WriteLine("Получен запрос от Telegram");
@@ -36,7 +35,6 @@ app.MapPost("/webhook", async context =>
 });
 
 app.Run("http://*:80"); // Слушаем порт 80
-
 
 async Task OnMessage(Message msg)
 {
@@ -90,7 +88,11 @@ async Task OnCommand(string command, Message msg)
                 OneTimeKeyboard = true
             };
 
-            await bot.SendMessage(msg.Chat.Id, "Выберите проблему:", replyMarkup: keyboard);
+            await bot.SendMessage(
+                chatId: msg.Chat.Id,
+                text: "Выберите проблему:",
+                replyMarkup: keyboard // Передаем клавиатуру
+            );
 
             // Устанавливаем состояние "ожидание выбора проблемы"
             userStates[msg.Chat.Id] = "waiting_for_problem";
@@ -103,6 +105,14 @@ async Task HandleProblemSelection(Message msg)
     string problem = msg.Text ?? "default problem";
     LogUserChoice(msg.Chat.Id, problem);
 
+    // Проверяем, что введенный текст соответствует ожидаемым вариантам
+    var validProblems = new[] { "Закончился напиток", "Нет сдачи", "Нет воды", "Другое" };
+    if (!validProblems.Contains(problem))
+    {
+        await bot.SendMessage(msg.Chat.Id, "Пожалуйста, выберите вариант из клавиатуры.");
+        return;
+    }
+
     if (problem == "Другое")
     {
         await bot.SendMessage(msg.Chat.Id, "Пожалуйста, опишите проблему:", replyMarkup: new ReplyKeyboardRemove());
@@ -114,6 +124,8 @@ async Task HandleProblemSelection(Message msg)
         userStates[msg.Chat.Id] = "waiting_for_district";
     }
 }
+
+// Остальные методы (HandleCustomProblem, ShowDistrictKeyboard и т.д.) остаются без изменений
 
 async Task HandleCustomProblem(Message msg)
 {
