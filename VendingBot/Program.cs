@@ -1,13 +1,26 @@
-﻿using Telegram.Bot;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
 
 var token = Environment.GetEnvironmentVariable("TELEGRAM_BOT_TOKEN") ?? throw new ArgumentNullException("TELEGRAM_BOT_TOKEN");
 var bot = new TelegramBotClient(token);
+var builder = WebApplication.CreateBuilder(args);
+var app = builder.Build();
 
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
+
+app.MapPost("/webhook", async context =>
+{
+    var update = await context.Request.ReadFromJsonAsync<Update>();
+    // Обработка обновления
+    await context.Response.WriteAsync("OK");
+});
+
+app.Run("http://*:80"); // Слушаем порт 80
 
 async Task OnMessage(Message msg)
 {

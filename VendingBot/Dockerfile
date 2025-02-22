@@ -2,16 +2,21 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копируем файлы проекта в контейнер
+# Копируем исходный код
 COPY . .
 
-# Собираем проект
+# Собираем приложение
 RUN dotnet publish -c Release -o /app
 
-# Используем runtime-образ для запуска приложения
+# Используем официальный образ .NET Runtime для запуска
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+
+# Копируем собранное приложение
 COPY --from=build /app .
 
-# Указываем точку входа (команду для запуска приложения)
+# Указываем порт, который будет слушать приложение
+EXPOSE 80
+
+# Запускаем приложение
 ENTRYPOINT ["dotnet", "VendingBot.dll"]
