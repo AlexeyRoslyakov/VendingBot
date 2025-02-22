@@ -22,7 +22,7 @@ namespace VendingBot
                 var update = JsonSerializer.Deserialize<Update>(request.Body); // Используем System.Text.Json
                 if (update?.Message != null)
                 {
-                    await Bot.SendTextMessageAsync(update.Message.Chat.Id, "Привет! Я работаю через AWS Lambda 🚀");
+                    await Bot.SendMessage(update.Message.Chat.Id, "Привет! Я работаю через AWS Lambda 🚀");
                 }
 
                 return new APIGatewayProxyResponse { StatusCode = 200, Body = "OK" };
