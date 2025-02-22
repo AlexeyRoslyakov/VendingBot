@@ -14,7 +14,6 @@ var bot = new TelegramBotClient(token, cancellationToken: cts.Token);
 var me = await bot.GetMe();
 await bot.DeleteWebhook();
 await bot.DropPendingUpdates();
-//cdawait bot.SetWebhookAsync("https://57821gu6n2.execute-api.us-east-2.amazonaws.com/prod");
 
 // Словарь для хранения состояния пользователей
 var userStates = new Dictionary<long, string>();
@@ -29,7 +28,7 @@ while (true)
 {
       await Task.Delay(1000); // Задержка 1 секунда
 }
-cts.Cancel(); // stop the bot
+//cts.Cancel(); // stop the bot
 
 async Task OnError(Exception exception, HandleErrorSource source)
 {
@@ -100,7 +99,7 @@ async Task OnCommand(string command, Message msg)
 async Task HandleProblemSelection(Message msg)
 {
     // Сохраняем выбранную проблему
-    string problem = msg.Text;
+    string problem = msg.Text??"default problem";
     LogUserChoice(msg.Chat.Id, problem);
     if (problem == "Другое")
     {
@@ -122,7 +121,7 @@ async Task HandleProblemSelection(Message msg)
 async Task HandleCustomProblem(Message msg)
 {
     // Сохраняем пользовательское описание проблемы
-    string customProblem = msg.Text;
+    string customProblem = msg.Text??"default_problem";
     LogCustomProblem(msg.Chat.Id, customProblem);
 
     // Переходим к выбору района
@@ -149,7 +148,7 @@ async Task ShowDistrictKeyboard(Chat chat)
 async Task HandleDistrictSelection(Message msg)
 {
     // Сохраняем выбранный район
-    string district = msg.Text;
+    string district = msg.Text?? "default_district";
 
     // Получаем сохраненную проблему
     string problem = GetUserChoice(msg.Chat.Id);
@@ -251,3 +250,6 @@ async Task NotifyOperator(long chatId, string problem, string district)
 
     await bot.SendMessage(operatorChatId, message);
 }
+
+//TODO Настроить логирование
+//TODO Удалить лишние файлы
