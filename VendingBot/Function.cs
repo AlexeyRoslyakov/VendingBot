@@ -19,16 +19,20 @@ namespace VendingBot
         {
             try
             {
-                var update = JsonSerializer.Deserialize<Update>(request.Body); // Используем System.Text.Json
+                // Десериализация входящего запроса от Telegram
+                var update = JsonSerializer.Deserialize<Update>(request.Body);
                 if (update?.Message != null)
                 {
-                    await Bot.SendMessage(update.Message.Chat.Id, "Привет! Я работаю через AWS Lambda 🚀");
+                    // Отправка ответа пользователю
+                    await Bot.SendMessage(update.Message.Chat.Id, "Привет! Я работаю через вебхук 🚀");
                 }
 
+                // Возвращаем успешный ответ
                 return new APIGatewayProxyResponse { StatusCode = 200, Body = "OK" };
             }
             catch (Exception ex)
             {
+                // Логирование ошибки
                 context.Logger.LogError($"Ошибка: {ex.Message}");
                 return new APIGatewayProxyResponse { StatusCode = 500, Body = "Error" };
             }
