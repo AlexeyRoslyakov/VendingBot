@@ -1,0 +1,11 @@
+﻿{
+    "profile": "default",
+    "region": "us-east-2", // Укажи свой регион
+    "configuration": "Release",
+    "framework": "net8.0", // Укажи версию .NET
+    "function-runtime": "dotnet8",
+    "function-memory-size": 512,
+    "function-timeout": 60,
+    "function-handler": "VendingBot::VendingBot.Function::FunctionHandler",
+    "function-name": "VendingBot"
+}

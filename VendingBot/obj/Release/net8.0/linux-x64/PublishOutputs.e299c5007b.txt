@@ -1,0 +1,9 @@
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\VendingBot
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\VendingBot.dll
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\VendingBot.deps.json
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\VendingBot.runtimeconfig.json
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\VendingBot.pdb
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\Amazon.Lambda.Core.dll
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\Amazon.Lambda.Serialization.Json.dll
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\Newtonsoft.Json.dll
+C:\Users\advsa\source\repos\VendingBot\VendingBot\bin\Release\net8.0\publish\Telegram.Bot.dll
