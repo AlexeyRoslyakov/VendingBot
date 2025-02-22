@@ -12,6 +12,7 @@ var app = builder.Build();
 
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
+var userChoices = new Dictionary<long, string>();
 
 app.MapPost("/webhook", async context =>
 {
@@ -105,6 +106,10 @@ async Task HandleProblemSelection(Message msg)
     string problem = msg.Text ?? "default problem";
     LogUserChoice(msg.Chat.Id, problem);
 
+   // Сохраняем выбранную проблему
+    userChoices[msg.Chat.Id] = problem;
+
+
     // Проверяем, что введенный текст соответствует ожидаемым вариантам
     var validProblems = new[] { "Закончился напиток", "Нет сдачи", "Нет воды", "Другое" };
     if (!validProblems.Contains(problem))
@@ -125,7 +130,7 @@ async Task HandleProblemSelection(Message msg)
     }
 }
 
-// Остальные методы (HandleCustomProblem, ShowDistrictKeyboard и т.д.) остаются без изменений
+
 
 async Task HandleCustomProblem(Message msg)
 {
@@ -160,7 +165,10 @@ async Task HandleDistrictSelection(Message msg)
     LogComplaint(msg.Chat.Id, fullProblem, district);
     await NotifyOperator(msg.Chat.Id, fullProblem, district);
     await bot.SendMessage(msg.Chat.Id, "Ваша жалоба зарегистрирована. Спасибо!", replyMarkup: new ReplyKeyboardRemove());
+
+    // Очищаем состояние и данные пользователя
     userStates.Remove(msg.Chat.Id);
+    userChoices.Remove(msg.Chat.Id);
 }
 
 void LogUserChoice(long chatId, string choice)
@@ -180,7 +188,10 @@ void LogComplaint(long chatId, string problem, string district)
 
 string GetUserChoice(long chatId)
 {
-    // Временное решение, замените на работу с базой данных
+    if (userChoices.TryGetValue(chatId, out var problem))
+    {
+        return problem;
+    }
     return "default_problem";
 }
 
