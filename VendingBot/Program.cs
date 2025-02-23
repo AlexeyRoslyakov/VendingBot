@@ -45,6 +45,7 @@ app.MapPost("/webhook", async context =>
     }
 });
 
+
 app.Run("http://*:80"); // Слушаем порт 80
 
 async Task OnMessage(Message msg)
