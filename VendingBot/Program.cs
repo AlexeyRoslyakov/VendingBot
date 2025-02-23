@@ -11,9 +11,18 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 
-// Сбрасываем  pending updates
+// Временное отключение вебхука
+await bot.DeleteWebhookAsync();
+Console.WriteLine("Вебхук временно отключен.");
+
+// Сброс непрочитанных сообщений
 var updates = await bot.GetUpdatesAsync(offset: -1); // Получаем и игнорируем все pending updates
 Console.WriteLine($"Сброшено {updates.Length} непрочитанных сообщений.");
+
+// Повторное включение вебхука
+await bot.SetWebhookAsync("https://vendingbot.onrender.com/webhook");
+Console.WriteLine("Вебхук успешно настроен.");
+
 
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
