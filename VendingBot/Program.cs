@@ -243,6 +243,18 @@ async Task HandleCustomProblemWithMedia(Message msg)
     {
         try
         {
+            await Task.Delay(500); // Даем Telegram чуть больше времени на обработку
+
+            var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
+            if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
+            {
+                Console.WriteLine($"Используем самое большое фото: {bestPhoto.FileId}");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: file_id пустой даже после задержки.");
+            }
+
             Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
 
             // Логируем информацию о каждой фотографии
