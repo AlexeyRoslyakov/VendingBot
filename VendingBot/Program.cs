@@ -223,7 +223,7 @@ async Task HandleMedia(Message msg)
         var photo = msg.Photo.Last();
         var file = await bot.GetFileAsync(photo.FileId);
         var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
-        Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}");
+        Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}  file: {file}");
         await bot.SendMessage(msg.Chat.Id, "Фотография получена. Спасибо!");
     }
     else if (msg.Document != null)
@@ -249,37 +249,31 @@ async Task HandleCustomProblemWithMedia(Message msg)
             for (int i = 0; i < msg.Photo.Length; i++)
             {
                 var photo = msg.Photo[i];
-                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}, msg.Photo.Last().FileId ={msg.Photo.Last().FileId} ");
+                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
             }
 
             // Берем последний элемент массива (самый высокий размер)
             var photoToProcess = msg.Photo.Last();
-            Console.WriteLine($"Обрабатываем фотографию: FileId = {photoToProcess.FileId}, Width = {photoToProcess.Width}, Height = {photoToProcess.Height}");
-
             if (string.IsNullOrEmpty(photoToProcess.FileId))
             {
-                Console.WriteLine("Ошибка: file_id пустой.");
-                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз.");
+                Console.WriteLine("Ошибка: file_id пустой. Возможно, фотография слишком большая или не была сохранена на серверах Telegram.");
+                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
                 return;
             }
-           
-                     
 
             Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
 
-            // Получаем файл
-            var file = await bot.GetFileAsync(photoToProcess.FileId);
-            // Проверяем размер файла (примерно)
-            if (file.FileSize > 10 * 1024 * 1024) // 10 МБ
+            // Получаем информацию о файле
+            var fileInfo = await bot.GetFileAsync(photoToProcess.FileId);
+            if (string.IsNullOrEmpty(fileInfo.FilePath))
             {
-                Console.WriteLine("Фотография слишком большая.");
-                await bot.SendMessage(msg.Chat.Id, "Фотография слишком большая. Максимальный размер — 10 МБ.");
+                Console.WriteLine("Ошибка: file_path пустой. Файл недоступен для скачивания.");
+                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
                 return;
             }
-            Console.WriteLine($"Файл получен: {file.FilePath}");
 
             // Формируем URL для скачивания файла
-            var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+            var fileUrl = $"https://api.telegram.org/file/bot{token}/{fileInfo.FilePath}";
             Console.WriteLine($"Сформирован URL файла: {fileUrl}");
 
             // Сохраняем URL фотографии
@@ -297,7 +291,8 @@ async Task HandleCustomProblemWithMedia(Message msg)
             Console.WriteLine($"Ошибка при обработке фотографии: {ex.Message}");
             await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз.");
         }
-    }
+    
+}
     else if (msg.Document != null)
     {
         try
