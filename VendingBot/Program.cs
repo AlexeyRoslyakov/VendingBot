@@ -39,36 +39,53 @@ app.Run("http://*:80"); // Слушаем порт 80
 
 async Task OnMessage(Message msg)
 {
-    if (msg.Text is not { } text)
-        return;
+    if (msg.Text is { } text)//обработка текстовых сообщений
+    {       
 
-    // Получаем текущее состояние пользователя
-    userStates.TryGetValue(msg.Chat.Id, out var state);
+        // Получаем текущее состояние пользователя
+        userStates.TryGetValue(msg.Chat.Id, out var state);
 
-    if (text.StartsWith('/'))
+        if (text.StartsWith('/'))
+        {
+            var command = text.ToLower();
+            await OnCommand(command, msg);
+        }
+        else
+        {
+            // Обработка текстовых сообщений в зависимости от состояния
+            switch (state)
+            {
+                case "waiting_for_problem":
+                    await HandleProblemSelection(msg);
+                    break;
+                case "waiting_for_district":
+                    await HandleDistrictSelection(msg);
+                    break;
+                case "waiting_for_custom_problem":
+                    await HandleCustomProblem(msg);
+                    break;
+                default:
+                    await bot.SendMessage(msg.Chat.Id, "Пожалуйста, используйте команду /help для начала.");
+                    break;
+            }
+        }
+    }
+    else if (msg.Photo != null)
     {
-        var command = text.ToLower();
-        await OnCommand(command, msg);
+        // Обработка фотографий
+        await HandlePhoto(msg);
+    }
+    else if (msg.Document != null)
+    {
+        // Обработка документов
+        await HandleDocument(msg);
     }
     else
     {
-        // Обработка текстовых сообщений в зависимости от состояния
-        switch (state)
-        {
-            case "waiting_for_problem":
-                await HandleProblemSelection(msg);
-                break;
-            case "waiting_for_district":
-                await HandleDistrictSelection(msg);
-                break;
-            case "waiting_for_custom_problem":
-                await HandleCustomProblem(msg);
-                break;
-            default:
-                await bot.SendMessage(msg.Chat.Id, "Пожалуйста, используйте команду /help для начала.");
-                break;
-        }
+        // Обработка других типов сообщений
+        await bot.SendMessage(msg.Chat.Id, "Я пока не умею обрабатывать этот тип сообщений.");
     }
+
 }
 
 async Task OnCommand(string command, Message msg)
@@ -170,6 +187,41 @@ async Task HandleDistrictSelection(Message msg)
     // Очищаем состояние и данные пользователя
     userStates.Remove(msg.Chat.Id);
     userChoices.Remove(msg.Chat.Id);
+}
+
+async Task HandlePhoto(Message msg)
+{
+    // Получаем фотографию с самым высоким разрешением
+    var photo = msg.Photo.Last();
+
+    // Получаем информацию о файле
+    var file = await bot.GetFileAsync(photo.FileId);
+
+    // Формируем URL для скачивания файла
+    var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+
+    // Логируем информацию о фотографии
+    Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}");
+
+    // Отправляем подтверждение пользователю
+    await bot.SendMessage(msg.Chat.Id, "Фотография получена. Спасибо!");
+}
+async Task HandleDocument(Message msg)
+{
+    // Получаем информацию о документе
+    var document = msg.Document;
+
+    // Получаем информацию о файле
+    var file = await bot.GetFileAsync(document.FileId);
+
+    // Формируем URL для скачивания файла
+    var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+
+    // Логируем информацию о документе
+    Console.WriteLine($"Получен документ от {msg.Chat.Id}: {fileUrl}");
+
+    // Отправляем подтверждение пользователю
+    await bot.SendMessage(msg.Chat.Id, "Документ получен. Спасибо!");
 }
 
 void LogUserChoice(long chatId, string choice)
