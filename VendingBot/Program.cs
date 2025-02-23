@@ -243,7 +243,7 @@ async Task HandleCustomProblemWithMedia(Message msg)
     {
         try
         {
-            await Task.Delay(500); // Даем Telegram чуть больше времени на обработку
+            await Task.Delay(5000); // Даем Telegram чуть больше времени на обработку
 
             var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
             if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
