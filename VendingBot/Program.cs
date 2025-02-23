@@ -70,23 +70,30 @@ async Task OnMessage(Message msg)
             }
         }
     }
-    else if (msg.Photo != null)
+    else if (msg.Photo != null || msg.Document != null)
     {
-        // Обработка фотографий
-        await HandlePhoto(msg);
-    }
-    else if (msg.Document != null)
-    {
-        // Обработка документов
-        await HandleDocument(msg);
+        // Обработка медиафайлов
+        userStates.TryGetValue(msg.Chat.Id, out var state);
+
+        if (state == "waiting_for_custom_problem")
+        {
+            // Если пользователь отправил фото/документ в состоянии "waiting_for_custom_problem"
+            await HandleCustomProblemWithMedia(msg);
+        }
+        else
+        {
+            // Обработка медиафайлов в других состояниях
+            await HandleMedia(msg);
+        }
     }
     else
     {
         // Обработка других типов сообщений
         await bot.SendMessage(msg.Chat.Id, "Я пока не умею обрабатывать этот тип сообщений.");
     }
-
 }
+
+
 
 async Task OnCommand(string command, Message msg)
 {
@@ -188,6 +195,27 @@ async Task HandleDistrictSelection(Message msg)
     userStates.Remove(msg.Chat.Id);
     userChoices.Remove(msg.Chat.Id);
 }
+async Task HandleMedia(Message msg)
+{
+    if (msg.Photo != null)
+    {
+        // Обработка фотографий
+        var photo = msg.Photo.Last();
+        var file = await bot.GetFileAsync(photo.FileId);
+        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+        Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}");
+        await bot.SendMessage(msg.Chat.Id, "Фотография получена. Спасибо!");
+    }
+    else if (msg.Document != null)
+    {
+        // Обработка документов
+        var document = msg.Document;
+        var file = await bot.GetFileAsync(document.FileId);
+        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+        Console.WriteLine($"Получен документ от {msg.Chat.Id}: {fileUrl}");
+        await bot.SendMessage(msg.Chat.Id, "Документ получен. Спасибо!");
+    }
+}
 
 async Task HandlePhoto(Message msg)
 {
@@ -222,6 +250,43 @@ async Task HandleDocument(Message msg)
 
     // Отправляем подтверждение пользователю
     await bot.SendMessage(msg.Chat.Id, "Документ получен. Спасибо!");
+}
+async Task HandleCustomProblemWithMedia(Message msg)
+{
+    if (msg.Photo != null)
+    {
+        // Обработка фотографий
+        var photo = msg.Photo.Last();
+        var file = await bot.GetFileAsync(photo.FileId);
+        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+
+        // Сохраняем URL фотографии
+        userChoices[msg.Chat.Id] = fileUrl;
+
+        // Отправляем подтверждение пользователю
+        await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+
+        // Переходим к выбору района
+        await ShowDistrictKeyboard(msg.Chat.Id);
+        userStates[msg.Chat.Id] = "waiting_for_district";
+    }
+    else if (msg.Document != null)
+    {
+        // Обработка документов
+        var document = msg.Document;
+        var file = await bot.GetFileAsync(document.FileId);
+        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+
+        // Сохраняем URL документа
+        userChoices[msg.Chat.Id] = fileUrl;
+
+        // Отправляем подтверждение пользователю
+        await bot.SendMessage(msg.Chat.Id, "Документ принят.");
+
+        // Переходим к выбору района
+        await ShowDistrictKeyboard(msg.Chat.Id);
+        userStates[msg.Chat.Id] = "waiting_for_district";
+    }
 }
 
 void LogUserChoice(long chatId, string choice)
@@ -260,9 +325,18 @@ string GetCustomProblem(long chatId)
 async Task NotifyOperator(long chatId, string problem, string district)
 {
     string operatorChatId = "142176914"; // Замените на реальный chat_id оператора
-    string message = $"Новая жалоба!\nПроблема: {problem}\nРайон: {district}\nChat ID пользователя: {chatId}";
 
-    await bot.SendMessage(operatorChatId, message);
+    if (userChoices.TryGetValue(chatId, out var fileUrl) && Uri.IsWellFormedUriString(fileUrl, UriKind.Absolute))
+    {
+        // Если есть URL файла, отправляем его оператору
+        await bot.SendPhoto(operatorChatId, fileUrl, caption: $"Новая жалоба!\nПроблема: default problem\nРайон: {district}\nChat ID пользователя: {chatId}");
+    }
+    else
+    {
+        // Если файла нет, отправляем только текст
+        string message = $"Новая жалоба!\nПроблема: {problem}\nРайон: {district}\nChat ID пользователя: {chatId}";
+        await bot.SendMessage(operatorChatId, message);
+    }
 }
 
 //TODO LOG files
