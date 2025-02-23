@@ -243,20 +243,19 @@ async Task HandleCustomProblemWithMedia(Message msg)
     {
         try
         {
-            // Получаем фотографию с самым высоким разрешением
+            Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
             var photo = msg.Photo.Last();
+            Console.WriteLine($"Обрабатываем фотографию с file_id: {photo.FileId}");
+
             var file = await bot.GetFileAsync(photo.FileId);
+            Console.WriteLine($"Файл получен: {file.FilePath}");
 
-            // Формируем URL для скачивания файла
             var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+            Console.WriteLine($"Сформирован URL файла: {fileUrl}");
 
-            // Сохраняем URL фотографии
             userChoices[msg.Chat.Id] = fileUrl;
-
-            // Отправляем подтверждение пользователю
             await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
 
-            // Переходим к выбору района
             await ShowDistrictKeyboard(msg.Chat.Id);
             userStates[msg.Chat.Id] = "waiting_for_district";
         }
@@ -346,5 +345,3 @@ async Task NotifyOperator(long chatId, string problem, string district)
         await bot.SendMessage(operatorChatId, message);
     }
 }
-
-//TODO LOG files
