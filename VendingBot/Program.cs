@@ -249,7 +249,7 @@ async Task HandleCustomProblemWithMedia(Message msg)
             for (int i = 0; i < msg.Photo.Length; i++)
             {
                 var photo = msg.Photo[i];
-                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
+                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}, msg.Photo.Last().FileId ={msg.Photo.Last().FileId} ");
             }
 
             // Берем последний элемент массива (самый высокий размер)
