@@ -10,6 +10,12 @@ var bot = new TelegramBotClient(token);
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+
+// Сбрасываем вебхук и pending updates
+await bot.DeleteWebhookAsync();
+var updates = await bot.GetUpdatesAsync(offset: -1); // Получаем и игнорируем все pending updates
+Console.WriteLine($"Сброшено {updates.Length} непрочитанных сообщений.");
+
 // Словарь для хранения состояния пользователей (временное решение)
 var userStates = new Dictionary<long, string>();
 var userChoices = new Dictionary<long, string>();
@@ -25,6 +31,10 @@ app.MapPost("/webhook", async context =>
             Console.WriteLine($"Получено сообщение: {update.Message.Text} от {update.Message.Chat.Id}");
             await OnMessage(update.Message); // Вызов логики бота
         }
+        else
+        {
+            Console.WriteLine("Получен запрос без сообщения.");
+        }
         await context.Response.WriteAsync("OK");
     }
     catch (Exception ex)
@@ -39,7 +49,7 @@ app.Run("http://*:80"); // Слушаем порт 80
 
 async Task OnMessage(Message msg)
 {
-    if (msg.Text is { } text)//обработка текстовых сообщений
+    if (msg.Text is { } text && !string.IsNullOrEmpty(text))//обработка текстовых сообщений
     {       
 
         // Получаем текущее состояние пользователя
@@ -89,6 +99,7 @@ async Task OnMessage(Message msg)
     else
     {
         // Обработка других типов сообщений
+        Console.WriteLine($"Получено некорректное сообщение от {msg.Chat.Id}.");
         await bot.SendMessage(msg.Chat.Id, "Я пока не умею обрабатывать этот тип сообщений.");
     }
 }
