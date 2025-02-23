@@ -220,10 +220,13 @@ async Task HandleMedia(Message msg)
     if (msg.Photo != null)
     {
         // Обработка фотографий
-        var photo = msg.Photo.Last();
-        var file = await bot.GetFileAsync(photo.FileId);
-        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
-        Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}  file: {file}");
+        var fileId = msg.Photo.Last().FileId;
+        var message = await bot.SendPhoto(msg.Chat.Id,fileId);
+        //var filePath = 
+        //var photo = msg.Photo.Last();
+        //var file = await bot.GetFileAsync(photo.FileId);
+        //var fileUrl = $"https://api.telegram.org/file/bot{token}/{message.FilePath}";
+        Console.WriteLine($"Получена фотография от {msg.Chat.Id}:   file: {fileId}");
         await bot.SendMessage(msg.Chat.Id, "Фотография получена. Спасибо!");
     }
     else if (msg.Document != null)
@@ -243,60 +246,63 @@ async Task HandleCustomProblemWithMedia(Message msg)
     {
         try
         {
-            await Task.Delay(5000); // Даем Telegram чуть больше времени на обработку
 
-            var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
-            if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
-            {
-                Console.WriteLine($"Используем самое большое фото: {bestPhoto.FileId}");
-            }
-            else
-            {
-                Console.WriteLine("Ошибка: file_id пустой даже после задержки.");
-            }
+           // var fileId = msg.
+           
+            //await Task.Delay(5000); // Даем Telegram чуть больше времени на обработку
 
-            Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
+            //var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
+            //if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
+            //{
+            //    Console.WriteLine($"Используем самое большое фото: {bestPhoto.FileId}");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Ошибка: file_id пустой даже после задержки.");
+            //}
 
-            // Логируем информацию о каждой фотографии
-            for (int i = 0; i < msg.Photo.Length; i++)
-            {
-                var photo = msg.Photo[i];
-                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
-            }
+            //Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
 
-            // Берем последний элемент массива (самый высокий размер)
-            var photoToProcess = msg.Photo.Last();
-            if (string.IsNullOrEmpty(photoToProcess.FileId))
-            {
-                Console.WriteLine("Ошибка: file_id пустой. Возможно, фотография слишком большая или не была сохранена на серверах Telegram.");
-                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
-                return;
-            }
+            //// Логируем информацию о каждой фотографии
+            //for (int i = 0; i < msg.Photo.Length; i++)
+            //{
+            //    var photo = msg.Photo[i];
+            //    Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
+            //}
 
-            Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
+            //// Берем последний элемент массива (самый высокий размер)
+            //var photoToProcess = msg.Photo.Last();
+            //if (string.IsNullOrEmpty(photoToProcess.FileId))
+            //{
+            //    Console.WriteLine("Ошибка: file_id пустой. Возможно, фотография слишком большая или не была сохранена на серверах Telegram.");
+            //    await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
+            //    return;
+            //}
 
-            // Получаем информацию о файле
-            var fileInfo = await bot.GetFileAsync(photoToProcess.FileId);
-            if (string.IsNullOrEmpty(fileInfo.FilePath))
-            {
-                Console.WriteLine("Ошибка: file_path пустой. Файл недоступен для скачивания.");
-                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
-                return;
-            }
+            //Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
 
-            // Формируем URL для скачивания файла
-            var fileUrl = $"https://api.telegram.org/file/bot{token}/{fileInfo.FilePath}";
-            Console.WriteLine($"Сформирован URL файла: {fileUrl}");
+            //// Получаем информацию о файле
+            //var fileInfo = await bot.GetFileAsync(photoToProcess.FileId);
+            //if (string.IsNullOrEmpty(fileInfo.FilePath))
+            //{
+            //    Console.WriteLine("Ошибка: file_path пустой. Файл недоступен для скачивания.");
+            //    await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
+            //    return;
+            //}
 
-            // Сохраняем URL фотографии
-            userChoices[msg.Chat.Id] = fileUrl;
+            //// Формируем URL для скачивания файла
+            //var fileUrl = $"https://api.telegram.org/file/bot{token}/{fileInfo.FilePath}";
+            //Console.WriteLine($"Сформирован URL файла: {fileUrl}");
 
-            // Отправляем подтверждение пользователю
-            await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+            //// Сохраняем URL фотографии
+            //userChoices[msg.Chat.Id] = fileUrl;
 
-            // Переходим к выбору района
-            await ShowDistrictKeyboard(msg.Chat.Id);
-            userStates[msg.Chat.Id] = "waiting_for_district";
+            //// Отправляем подтверждение пользователю
+            //await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+
+            //// Переходим к выбору района
+            //await ShowDistrictKeyboard(msg.Chat.Id);
+            //userStates[msg.Chat.Id] = "waiting_for_district";
         }
         catch (Exception ex)
         {
