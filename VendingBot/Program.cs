@@ -11,8 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
 
-// Сбрасываем вебхук и pending updates
-await bot.DeleteWebhookAsync();
+// Сбрасываем  pending updates
 var updates = await bot.GetUpdatesAsync(offset: -1); // Получаем и игнорируем все pending updates
 Console.WriteLine($"Сброшено {updates.Length} непрочитанных сообщений.");
 
@@ -229,40 +228,6 @@ async Task HandleMedia(Message msg)
     }
 }
 
-async Task HandlePhoto(Message msg)
-{
-    // Получаем фотографию с самым высоким разрешением
-    var photo = msg.Photo.Last();
-
-    // Получаем информацию о файле
-    var file = await bot.GetFileAsync(photo.FileId);
-
-    // Формируем URL для скачивания файла
-    var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
-
-    // Логируем информацию о фотографии
-    Console.WriteLine($"Получена фотография от {msg.Chat.Id}: {fileUrl}");
-
-    // Отправляем подтверждение пользователю
-    await bot.SendMessage(msg.Chat.Id, "Фотография получена. Спасибо!");
-}
-async Task HandleDocument(Message msg)
-{
-    // Получаем информацию о документе
-    var document = msg.Document;
-
-    // Получаем информацию о файле
-    var file = await bot.GetFileAsync(document.FileId);
-
-    // Формируем URL для скачивания файла
-    var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
-
-    // Логируем информацию о документе
-    Console.WriteLine($"Получен документ от {msg.Chat.Id}: {fileUrl}");
-
-    // Отправляем подтверждение пользователю
-    await bot.SendMessage(msg.Chat.Id, "Документ получен. Спасибо!");
-}
 async Task HandleCustomProblemWithMedia(Message msg)
 {
     if (msg.Photo != null)
