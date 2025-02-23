@@ -244,18 +244,51 @@ async Task HandleCustomProblemWithMedia(Message msg)
         try
         {
             Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
-            var photo = msg.Photo.Last();
-            Console.WriteLine($"Обрабатываем фотографию с file_id: {photo.FileId}");
 
-            var file = await bot.GetFileAsync(photo.FileId);
+            // Логируем информацию о каждой фотографии
+            for (int i = 0; i < msg.Photo.Length; i++)
+            {
+                var photo = msg.Photo[i];
+                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
+            }
+
+            // Берем последний элемент массива (самый высокий размер)
+            var photoToProcess = msg.Photo.Last();
+            Console.WriteLine($"Обрабатываем фотографию: FileId = {photoToProcess.FileId}, Width = {photoToProcess.Width}, Height = {photoToProcess.Height}");
+
+            if (string.IsNullOrEmpty(photoToProcess.FileId))
+            {
+                Console.WriteLine("Ошибка: file_id пустой.");
+                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз.");
+                return;
+            }
+           
+                     
+
+            Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
+
+            // Получаем файл
+            var file = await bot.GetFileAsync(photoToProcess.FileId);
+            // Проверяем размер файла (примерно)
+            if (file.FileSize > 10 * 1024 * 1024) // 10 МБ
+            {
+                Console.WriteLine("Фотография слишком большая.");
+                await bot.SendMessage(msg.Chat.Id, "Фотография слишком большая. Максимальный размер — 10 МБ.");
+                return;
+            }
             Console.WriteLine($"Файл получен: {file.FilePath}");
 
+            // Формируем URL для скачивания файла
             var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
             Console.WriteLine($"Сформирован URL файла: {fileUrl}");
 
+            // Сохраняем URL фотографии
             userChoices[msg.Chat.Id] = fileUrl;
+
+            // Отправляем подтверждение пользователю
             await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
 
+            // Переходим к выбору района
             await ShowDistrictKeyboard(msg.Chat.Id);
             userStates[msg.Chat.Id] = "waiting_for_district";
         }
