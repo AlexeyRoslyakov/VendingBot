@@ -212,3 +212,5 @@ async Task NotifyOperator(long chatId, string problem, string district)
 
     await bot.SendMessage(operatorChatId, message);
 }
+
+//TODO LOG files
