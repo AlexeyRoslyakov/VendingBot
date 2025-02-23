@@ -59,7 +59,7 @@ app.Run("http://*:80"); // Слушаем порт 80
 async Task OnMessage(Message msg)
 {
     if (msg.Text is { } text && !string.IsNullOrEmpty(text))//обработка текстовых сообщений
-    {       
+    {
 
         // Получаем текущее состояние пользователя
         userStates.TryGetValue(msg.Chat.Id, out var state);
@@ -142,6 +142,9 @@ async Task OnCommand(string command, Message msg)
             // Устанавливаем состояние "ожидание выбора проблемы"
             userStates[msg.Chat.Id] = "waiting_for_problem";
             break;
+        case "/restart":
+            await RestartBot();
+            break;
     }
 }
 
@@ -150,7 +153,7 @@ async Task HandleProblemSelection(Message msg)
     string problem = msg.Text ?? "default problem";
     LogUserChoice(msg.Chat.Id, problem);
 
-   // Сохраняем выбранную проблему
+    // Сохраняем выбранную проблему
     userChoices[msg.Chat.Id] = problem;
 
 
@@ -221,7 +224,7 @@ async Task HandleMedia(Message msg)
     {
         // Обработка фотографий
         var fileId = msg.Photo.Last().FileId;
-        var message = await bot.SendPhoto(msg.Chat.Id,fileId);
+        var message = await bot.SendPhoto(msg.Chat.Id, fileId);
         //var filePath = 
         //var photo = msg.Photo.Last();
         //var file = await bot.GetFileAsync(photo.FileId);
@@ -247,70 +250,68 @@ async Task HandleCustomProblemWithMedia(Message msg)
         try
         {
 
-           // var fileId = msg.
-           
-            //await Task.Delay(5000); // Даем Telegram чуть больше времени на обработку
+            await Task.Delay(5000); // Даем Telegram чуть больше времени на обработку
 
-            //var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
-            //if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
-            //{
-            //    Console.WriteLine($"Используем самое большое фото: {bestPhoto.FileId}");
-            //}
-            //else
-            //{
-            //    Console.WriteLine("Ошибка: file_id пустой даже после задержки.");
-            //}
+            var bestPhoto = msg.Photo.LastOrDefault(); // Берем самое большое фото
+            if (bestPhoto != null && !string.IsNullOrEmpty(bestPhoto.FileId))
+            {
+                Console.WriteLine($"Используем самое большое фото: {bestPhoto.FileId}");
+            }
+            else
+            {
+                Console.WriteLine("Ошибка: file_id пустой даже после задержки.");
+            }
 
-            //Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
+            Console.WriteLine($"Получено {msg.Photo.Length} фотографий.");
 
-            //// Логируем информацию о каждой фотографии
-            //for (int i = 0; i < msg.Photo.Length; i++)
-            //{
-            //    var photo = msg.Photo[i];
-            //    Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
-            //}
+            // Логируем информацию о каждой фотографии
+            for (int i = 0; i < msg.Photo.Length; i++)
+            {
+                var photo = msg.Photo[i];
+                Console.WriteLine($"Фотография {i + 1}: FileId = {photo.FileId}, Width = {photo.Width}, Height = {photo.Height}");
+            }
 
-            //// Берем последний элемент массива (самый высокий размер)
-            //var photoToProcess = msg.Photo.Last();
-            //if (string.IsNullOrEmpty(photoToProcess.FileId))
-            //{
-            //    Console.WriteLine("Ошибка: file_id пустой. Возможно, фотография слишком большая или не была сохранена на серверах Telegram.");
-            //    await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
-            //    return;
-            //}
+            // Берем последний элемент массива (самый высокий размер)
+            var photoToProcess = msg.Photo.Last();
+            if (string.IsNullOrEmpty(photoToProcess.FileId))
+            {
+                Console.WriteLine("Ошибка: file_id пустой. Возможно, фотография слишком большая или не была сохранена на серверах Telegram.");
+                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
+                return;
+            }
 
-            //Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
+            Console.WriteLine($"Обрабатываем фотографию с file_id: {photoToProcess.FileId}");
 
-            //// Получаем информацию о файле
-            //var fileInfo = await bot.GetFileAsync(photoToProcess.FileId);
-            //if (string.IsNullOrEmpty(fileInfo.FilePath))
-            //{
-            //    Console.WriteLine("Ошибка: file_path пустой. Файл недоступен для скачивания.");
-            //    await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
-            //    return;
-            //}
+            // Получаем информацию о файле
+            var fileInfo = await bot.GetFileAsync(photoToProcess.FileId);
+            if (string.IsNullOrEmpty(fileInfo.FilePath))
+            {
+                Console.WriteLine("Ошибка: file_path пустой. Файл недоступен для скачивания.");
+                await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз или отправьте файл как документ.");
+                return;
+            }
 
-            //// Формируем URL для скачивания файла
-            //var fileUrl = $"https://api.telegram.org/file/bot{token}/{fileInfo.FilePath}";
-            //Console.WriteLine($"Сформирован URL файла: {fileUrl}");
+            // Формируем URL для скачивания файла
+            var fileUrl = $"https://api.telegram.org/file/bot{token}/{fileInfo.FilePath}";
+            Console.WriteLine($"Сформирован URL файла: {fileUrl}");
 
-            //// Сохраняем URL фотографии
-            //userChoices[msg.Chat.Id] = fileUrl;
+            // Сохраняем URL фотографии
+            userChoices[msg.Chat.Id] = fileUrl;
 
-            //// Отправляем подтверждение пользователю
-            //await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+            // Отправляем подтверждение пользователю
+            await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
 
-            //// Переходим к выбору района
-            //await ShowDistrictKeyboard(msg.Chat.Id);
-            //userStates[msg.Chat.Id] = "waiting_for_district";
+            // Переходим к выбору района
+            await ShowDistrictKeyboard(msg.Chat.Id);
+            userStates[msg.Chat.Id] = "waiting_for_district";
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Ошибка при обработке фотографии: {ex.Message}");
             await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз.");
         }
-    
-}
+
+    }
     else if (msg.Document != null)
     {
         try
@@ -389,5 +390,39 @@ async Task NotifyOperator(long chatId, string problem, string district)
         // Если файла нет, отправляем только текст
         string message = $"Новая жалоба!\nПроблема: {problem}\nРайон: {district}\nChat ID пользователя: {chatId}";
         await bot.SendMessage(operatorChatId, message);
+    }
+}
+
+async Task RestartBot()
+{
+    try
+    {
+        Console.WriteLine("Начало перезапуска бота...");
+
+        // Удаляем вебхук
+        await bot.DeleteWebhookAsync();
+        Console.WriteLine("Вебхук успешно удален.");
+
+        // Закрываем все сессии бота
+        await bot.LogOutAsync();
+        Console.WriteLine("Бот успешно вышел из облачного API Telegram.");
+
+        // Закрываем текущий экземпляр бота
+        await bot.CloseAsync();
+        Console.WriteLine("Экземпляр бота успешно закрыт.");
+
+        // Ждем 10 минут (если требуется)
+        Console.WriteLine("Ожидание 10 минут перед перезапуском...");
+        await Task.Delay(TimeSpan.FromMinutes(10));
+
+        // Устанавливаем вебхук
+        await bot.SetWebhookAsync("https://vendingbot.onrender.com/webhook");
+        Console.WriteLine("Вебхук успешно настроен.");
+
+        Console.WriteLine("Перезапуск бота завершен.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Ошибка при перезапуске бота: {ex.Message}");
     }
 }
