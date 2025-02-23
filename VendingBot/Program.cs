@@ -239,42 +239,64 @@ async Task HandleMedia(Message msg)
 
 async Task HandleCustomProblemWithMedia(Message msg)
 {
-    if (msg.Photo != null)
+    if (msg.Photo != null && msg.Photo.Any())
     {
-        // Обработка фотографий
-        var photo = msg.Photo.Last();
-        var file = await bot.GetFileAsync(photo.FileId);
-        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+        try
+        {
+            // Получаем фотографию с самым высоким разрешением
+            var photo = msg.Photo.Last();
+            var file = await bot.GetFileAsync(photo.FileId);
 
-        // Сохраняем URL фотографии
-        userChoices[msg.Chat.Id] = fileUrl;
+            // Формируем URL для скачивания файла
+            var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
 
-        // Отправляем подтверждение пользователю
-        await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+            // Сохраняем URL фотографии
+            userChoices[msg.Chat.Id] = fileUrl;
 
-        // Переходим к выбору района
-        await ShowDistrictKeyboard(msg.Chat.Id);
-        userStates[msg.Chat.Id] = "waiting_for_district";
+            // Отправляем подтверждение пользователю
+            await bot.SendMessage(msg.Chat.Id, "Фотография принята.");
+
+            // Переходим к выбору района
+            await ShowDistrictKeyboard(msg.Chat.Id);
+            userStates[msg.Chat.Id] = "waiting_for_district";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обработке фотографии: {ex.Message}");
+            await bot.SendMessage(msg.Chat.Id, "Не удалось обработать фотографию. Пожалуйста, попробуйте ещё раз.");
+        }
     }
     else if (msg.Document != null)
     {
-        // Обработка документов
-        var document = msg.Document;
-        var file = await bot.GetFileAsync(document.FileId);
-        var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
+        try
+        {
+            // Обработка документов
+            var document = msg.Document;
+            var file = await bot.GetFileAsync(document.FileId);
+            var fileUrl = $"https://api.telegram.org/file/bot{token}/{file.FilePath}";
 
-        // Сохраняем URL документа
-        userChoices[msg.Chat.Id] = fileUrl;
+            // Сохраняем URL документа
+            userChoices[msg.Chat.Id] = fileUrl;
 
-        // Отправляем подтверждение пользователю
-        await bot.SendMessage(msg.Chat.Id, "Документ принят.");
+            // Отправляем подтверждение пользователю
+            await bot.SendMessage(msg.Chat.Id, "Документ принят.");
 
-        // Переходим к выбору района
-        await ShowDistrictKeyboard(msg.Chat.Id);
-        userStates[msg.Chat.Id] = "waiting_for_district";
+            // Переходим к выбору района
+            await ShowDistrictKeyboard(msg.Chat.Id);
+            userStates[msg.Chat.Id] = "waiting_for_district";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при обработке документа: {ex.Message}");
+            await bot.SendMessage(msg.Chat.Id, "Не удалось обработать документ. Пожалуйста, попробуйте ещё раз.");
+        }
+    }
+    else
+    {
+        // Если сообщение не содержит фотографию или документ
+        await bot.SendMessage(msg.Chat.Id, "Пожалуйста, отправьте фотографию или документ.");
     }
 }
-
 void LogUserChoice(long chatId, string choice)
 {
     Console.WriteLine($"Проблема: {choice} для пользователя {chatId}");
