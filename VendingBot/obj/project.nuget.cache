@@ -1,19 +1,15 @@
 {
   "version": 2,
-  "dgSpecHash": "SJXjjjtWrrE=",
+  "dgSpecHash": "046es/4hE7k=",
   "success": true,
   "projectFilePath": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\VendingBot.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\advsa\\.nuget\\packages\\amazon.lambda.apigatewayevents\\2.7.1\\amazon.lambda.apigatewayevents.2.7.1.nupkg.sha512",
-    "C:\\Users\\advsa\\.nuget\\packages\\amazon.lambda.core\\2.5.0\\amazon.lambda.core.2.5.0.nupkg.sha512",
-    "C:\\Users\\advsa\\.nuget\\packages\\amazon.lambda.serialization.json\\2.2.4\\amazon.lambda.serialization.json.2.2.4.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.configuration.binder\\8.0.0\\microsoft.extensions.configuration.binder.8.0.0.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\8.0.0\\microsoft.extensions.options.configurationextensions.8.0.0.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
-    "C:\\Users\\advsa\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\system.text.json\\8.0.5\\system.text.json.8.0.5.nupkg.sha512",
     "C:\\Users\\advsa\\.nuget\\packages\\telegram.bot\\22.4.4\\telegram.bot.22.4.4.nupkg.sha512"
   ],

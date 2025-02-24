@@ -50,18 +50,6 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "Amazon.Lambda.APIGatewayEvents": {
-              "target": "Package",
-              "version": "[2.7.1, )"
-            },
-            "Amazon.Lambda.Core": {
-              "target": "Package",
-              "version": "[2.5.0, )"
-            },
-            "Amazon.Lambda.Serialization.Json": {
-              "target": "Package",
-              "version": "[2.2.4, )"
-            },
             "Telegram.Bot": {
               "target": "Package",
               "version": "[22.4.4, )"

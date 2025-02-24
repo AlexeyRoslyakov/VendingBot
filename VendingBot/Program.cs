@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -28,20 +29,27 @@ Console.WriteLine("Вебхук успешно настроен.");
 var userStates = new Dictionary<long, string>();
 var userChoices = new Dictionary<long, string>();
 
+
+
 app.MapPost("/webhook", async context =>
 {
     Console.WriteLine("Получен запрос от Telegram");
     try
     {
-        // Log the raw request body
+        // Read the raw request body into a string
+        string rawBody;
         using (var reader = new StreamReader(context.Request.Body))
         {
-            var rawBody = await reader.ReadToEndAsync();
+            rawBody = await reader.ReadToEndAsync();
             Console.WriteLine($"Raw Telegram payload: {rawBody}");
         }
-        context.Request.Body.Position = 0; // Reset stream position for deserialization
 
-        var update = await context.Request.ReadFromJsonAsync<Update>();
+        // Deserialize the Update object from the string
+        var update = JsonSerializer.Deserialize<Update>(rawBody, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
         if (update?.Message != null)
         {
             Console.WriteLine($"Получено сообщение: {update.Message.Text} от {update.Message.Chat.Id}");

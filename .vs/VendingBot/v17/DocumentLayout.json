@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\advsa\\source\\repos\\VendingBot\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|c:\\users\\advsa\\source\\repos\\vendingbot\\vendingbot\\vendingbot.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|solutionrelative:vendingbot\\vendingbot.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|c:\\users\\advsa\\source\\repos\\vendingbot\\vendingbot\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|solutionrelative:vendingbot\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|c:\\users\\advsa\\source\\repos\\vendingbot\\vendingbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|solutionrelative:vendingbot\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|c:\\users\\advsa\\source\\repos\\vendingbot\\vendingbot\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|solutionrelative:vendingbot\\dockerfile||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|c:\\users\\advsa\\source\\repos\\vendingbot\\vendingbot\\vendingbot.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{62FBCA83-BC50-4A91-8297-4CC14C858EA4}|VendingBot\\VendingBot.csproj|solutionrelative:vendingbot\\vendingbot.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,15 +34,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Dockerfile",
               "DocumentMoniker": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\Dockerfile",
               "RelativeDocumentMoniker": "VendingBot\\Dockerfile",
               "ToolTip": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\Dockerfile",
               "RelativeToolTip": "VendingBot\\Dockerfile",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAnAAAAAAAAAA==",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAuwCEAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2025-02-22T21:47:48.453Z"
+              "WhenOpened": "2025-02-22T21:47:48.453Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -52,22 +53,22 @@
               "RelativeDocumentMoniker": "VendingBot\\Program.cs",
               "ToolTip": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\Program.cs",
               "RelativeToolTip": "VendingBot\\Program.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAmwDkAAAADAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-22T17:07:32.907Z"
+              "WhenOpened": "2025-02-22T17:07:32.907Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "VendingBot.csproj",
               "DocumentMoniker": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\VendingBot.csproj",
               "RelativeDocumentMoniker": "VendingBot\\VendingBot.csproj",
               "ToolTip": "C:\\Users\\advsa\\source\\repos\\VendingBot\\VendingBot\\VendingBot.csproj",
               "RelativeToolTip": "VendingBot\\VendingBot.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAADAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-18T23:33:32.28Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-18T23:33:32.28Z"
             }
           ]
         }
