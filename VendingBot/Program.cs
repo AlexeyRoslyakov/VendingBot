@@ -33,15 +33,19 @@ app.MapPost("/webhook", async context =>
     Console.WriteLine("Получен запрос от Telegram");
     try
     {
+        // Log the raw request body
+        using (var reader = new StreamReader(context.Request.Body))
+        {
+            var rawBody = await reader.ReadToEndAsync();
+            Console.WriteLine($"Raw Telegram payload: {rawBody}");
+        }
+        context.Request.Body.Position = 0; // Reset stream position for deserialization
+
         var update = await context.Request.ReadFromJsonAsync<Update>();
         if (update?.Message != null)
         {
             Console.WriteLine($"Получено сообщение: {update.Message.Text} от {update.Message.Chat.Id}");
-            await OnMessage(update.Message); // Вызов логики бота
-        }
-        else
-        {
-            Console.WriteLine("Получен запрос без сообщения.");
+            await OnMessage(update.Message);
         }
         await context.Response.WriteAsync("OK");
     }
@@ -52,7 +56,6 @@ app.MapPost("/webhook", async context =>
         await context.Response.WriteAsync("Internal Server Error");
     }
 });
-
 
 app.Run("http://*:80"); // Слушаем порт 80
 

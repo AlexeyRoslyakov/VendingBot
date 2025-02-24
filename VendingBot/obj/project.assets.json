@@ -187,7 +187,7 @@
           "buildTransitive/net6.0/System.Text.Json.targets": {}
         }
       },
-      "Telegram.Bot/22.4.3": {
+      "Telegram.Bot/22.4.4": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
@@ -569,10 +569,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Telegram.Bot/22.4.3": {
-      "sha512": "WiIS43Hh3Uk+74Oenhe5kaU+Td2hgiYYUo3Mo+ieqCaNrLJCELwgMBOcYGgRt4BZ0V2Mhy9LoJ5gTzc6BryqGg==",
+    "Telegram.Bot/22.4.4": {
+      "sha512": "LnSX4GMA3p4XZY6xsBZ9zQGyMYUW3htTcBNI19g8ISMM4/BWz7zLFXrrZ6nfE/vI9FB8RvdDrfqiaoB6911qmA==",
       "type": "package",
-      "path": "telegram.bot/22.4.3",
+      "path": "telegram.bot/22.4.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -584,7 +584,7 @@
         "lib/netstandard2.0/Telegram.Bot.pdb",
         "lib/netstandard2.0/Telegram.Bot.xml",
         "package-icon.png",
-        "telegram.bot.22.4.3.nupkg.sha512",
+        "telegram.bot.22.4.4.nupkg.sha512",
         "telegram.bot.nuspec"
       ]
     }
@@ -594,7 +594,7 @@
       "Amazon.Lambda.APIGatewayEvents >= 2.7.1",
       "Amazon.Lambda.Core >= 2.5.0",
       "Amazon.Lambda.Serialization.Json >= 2.2.4",
-      "Telegram.Bot >= 22.4.3"
+      "Telegram.Bot >= 22.4.4"
     ]
   },
   "packageFolders": {
@@ -661,7 +661,7 @@
           },
           "Telegram.Bot": {
             "target": "Package",
-            "version": "[22.4.3, )"
+            "version": "[22.4.4, )"
           }
         },
         "imports": [
